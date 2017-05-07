@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-        <div class="logo">鱼鳞图基础平台</div>
+        <div class="logo">Mocker基础平台</div>
         <div class="user-info">
             <el-dropdown trigger="click" @command="handleCommand">
                 <span class="el-dropdown-link">
