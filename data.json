@@ -1,0 +1,53 @@
+{
+    "user_list":[
+        {
+            "name":"mocker1",
+            "nickname":"zhouyang1",
+            "sex":"1",
+            "age":"18",
+            "email":"mocker1@qq.com",
+            "status" : "1",
+            "roles" : "超级管理员,审核人员,受理人员"
+        },{
+            "name":"mocker1",
+            "nickname":"zhouyang1",
+            "sex":"1",
+            "age":"18",
+            "email":"mocker1@qq.com",
+            "status" : "1",
+            "roles" : "超级管理员,审核人员,受理人员"
+        },{
+            "name":"mocker1",
+            "nickname":"zhouyang1",
+            "sex":"1",
+            "age":"18",
+            "email":"mocker1@qq.com",
+            "status" : "1",
+            "roles" : "超级管理员,审核人员,受理人员"
+        },{
+            "name":"mocker1",
+            "nickname":"zhouyang1",
+            "sex":"1",
+            "age":"18",
+            "email":"mocker1@qq.com",
+            "status" : "1",
+            "roles" : "超级管理员,审核人员,受理人员"
+        },{
+            "name":"mocker1",
+            "nickname":"zhouyang1",
+            "sex":"1",
+            "age":"18",
+            "email":"mocker1@qq.com",
+            "status" : "1",
+            "roles" : "超级管理员,审核人员,受理人员"
+        },{
+            "name":"mocker1",
+            "nickname":"zhouyang1",
+            "sex":"1",
+            "age":"18",
+            "email":"mocker1@qq.com",
+            "status" : "1",
+            "roles" : "超级管理员,审核人员,受理人员"
+        }
+    ]
+}
