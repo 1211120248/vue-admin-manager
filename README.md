@@ -12,6 +12,8 @@
 本系统最基本的框架来自于https://github.com/lin-xin/vue-manage-system.git。
 搭建最基本的环境太麻烦了,所以就去网上找了一个开源项目再上面继续开发。
 
+借鉴了这套框架的一些model和service的思想https://github.com/gochant/rmm.git
+
 ## 功能 ##
 - [x] Element UI
 - [x] 登录/注销

@@ -29,7 +29,11 @@ module.exports = {
       'vue$': 'vue/dist/vue.common.js',
       'src': resolve('src'),
       'assets': resolve('src/assets'),
-      'components': resolve('src/components')
+      'components': resolve('src/components'),
+      'models': resolve('src/models'),
+      'app': path.resolve(__dirname, '../src/app'),
+      'router': path.resolve(__dirname, '../src/router'),
+      'utils': path.resolve(__dirname, '../src/utils')
     }
   },
   module: {
