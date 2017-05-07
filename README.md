@@ -20,5 +20,7 @@
 
 
 ## 项目截图 ##
-![Image text](https://github.com/lin-xin/manage-system/raw/master/screenshots/wms1.png)
+![Image text](https://github.com/1211120248/vue-admin-manager/blob/master/screenshots/1.png)
+![Image text](https://github.com/1211120248/vue-admin-manager/blob/master/screenshots/2.png)
+![Image text](https://github.com/1211120248/vue-admin-manager/blob/master/screenshots/3.png)
 
