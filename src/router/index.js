@@ -51,21 +51,25 @@ export default new Router({
                 },
                 {
                     path: '/user',
-                    component: resolve => require(['../components/system/User.vue'], resolve)
+                    component: resolve => require(['../components/page/system/User.vue'], resolve)
                 },
                 {
                     path: '/role',
-                    component: resolve => require(['../components/system/Role.vue'], resolve)
+                    component: resolve => require(['../components/page/system/Role.vue'], resolve)
                 },
                 {
                     path: '/permission',
-                    component: resolve => require(['../components/system/Permission.vue'], resolve)
+                    component: resolve => require(['../components/page/system/Permission.vue'], resolve)
                 }
             ]
         },
         {
             path: '/login',
             component: resolve => require(['../components/page/Login.vue'], resolve)
+        },
+        {
+            path: '/blog',
+            component: resolve => require(['../components/blog/index.vue'], resolve)
         }
     ]
 })

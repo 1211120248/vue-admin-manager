@@ -26,7 +26,7 @@
                     </el-table-column>
                     <el-table-column prop="roles" label="角色" width="150" show-overflow-tooltip>
                     </el-table-column>
-                    <el-table-column prop="email" label="邮箱地址" show-overflow-tooltip>
+                    <el-table-column prop="tel" label="联系电话" show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column prop="age" label="年龄" width="100">
                     </el-table-column>
@@ -71,18 +71,22 @@
                     :data="roles">
                 </el-transfer>
             </el-row>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="roleVisible = false">取 消</el-button>
+                <el-button type="primary" @click="handleSaveRoles">确 定</el-button>
+            </div>
         </el-dialog>
 
         <el-dialog :title="form.title" :visible.sync="editFormVisible" size="tiny">
             <el-form :model="form" label-width="40px">
                 <el-form-item label="账号">
-                    <el-input v-model="form.name" :disabled="form.edit"></el-input>
+                    <el-input v-model="form.name" :disabled="form.state === 'edit'"></el-input>
                 </el-form-item>
                 <el-form-item label="昵称">
                     <el-input v-model="form.nickname"></el-input>
                 </el-form-item>
-                <el-form-item label="邮箱">
-                    <el-input v-model="form.email"></el-input>
+                <el-form-item label="联系电话">
+                    <el-input v-model="form.tel"></el-input>
                 </el-form-item>
                 <el-form-item label="性别">
                     <el-radio-group v-model="form.sex">
@@ -117,16 +121,16 @@
                 viewFormVisible:false,
                 roleVisible:false,
                 searchContent: '',
+                state:'',
                 searchWhere: '1',
                 form:{
-                    "name" : "",
-                    "nickname" : "",
-                    "email" : "",
-                    "sex" : "1",
-                    "age" : "",
-                    "status":"1",
-                    "edit":"",
-                    "title":""
+                    name : '',
+                    nickname : '',
+                    tel : '',
+                    sex : '1',
+                    age : '',
+                    status:'1',
+                    title :''
                 },
                 selectRoles:[],
                 roles:[
@@ -172,8 +176,10 @@
             },
             getData(){
                 this.$axios.post('/api/system/user',{page:this.cur_page}).then((res) => {
-                    this.tableData = res.data.data;
-                    this.total = res.data.total
+                    if(res.data.code === "200"){
+                        this.tableData = res.data.data;
+                        this.total = res.data.total
+                    }
                 })
             },
             formatter(row, column) {
@@ -183,20 +189,28 @@
                 return row.tag === value;
             },
             handleAdd(){
+                this.form.name = '';
+                this.form.nickname = '';
+                this.form.tel = '';
+                this.form.sex = 1;
+                this.form.age = '';
+                this.form.status = 1;
+
                 this.form.title = "添加用户";
                 this.editFormVisible = true;
                 //如果edit为false 则是添加状态
-                this.form.edit = false;
-
-            },handleView(index, row){
+                this.form.state = "add";
+            },
+            handleView(index, row){
                 this.viewFormVisible = true;
                 this.form.name = row.name;
                 this.form.nickname = row.nickname;
-                this.form.email = row.email;
+                this.form.tel = row.email;
                 this.form.sex = row.sex;
                 this.form.age = row.age;
                 this.form.status = row.status;
-            },handleAssignmentRoles(index, row){
+            },
+            handleAssignmentRoles(index, row){
                 this.roleVisible = true;
             },
             handleEdit(index, row) {
@@ -205,17 +219,22 @@
                 this.editFormVisible = true;
                 this.form.name = row.name;
                 this.form.nickname = row.nickname;
-                this.form.email = row.email;
+                this.form.tel = row.email;
                 this.form.sex = row.sex;
                 this.form.age = row.age;
                 this.form.status = row.status;
                 //设置为编辑状态
-                this.form.edit = true;
+                this.form.state = "edit";
             },
             handleSave() {
-                if(this.form.edit){
+                if(this.form.state === "edit"){
                     //编辑用户
-                    alert("编辑用户");
+                    this.$axios.post('/api/system/user/save',{}).then((res) => {
+                        if(res.data.code === "200"){
+                            this.tableData = res.data.data;
+                            this.total = res.data.total
+                        }
+                    })
                 }else{
                     //添加用户
                     alert("添加用户");
@@ -233,6 +252,9 @@
             },
             handleDelete(index, row) {
                 this.$message.error('删除第'+(index+1)+'行');
+            },
+            handleRoles(){
+
             }
         }
     }

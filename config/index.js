@@ -28,12 +28,9 @@ module.exports = {
         assetsSubDirectory: 'static',
         assetsPublicPath: '/',
         proxyTable: {
-            '/api':{
-                target:'http://jsonplaceholder.typicode.com',
-                changeOrigin:true,
-                pathRewrite:{
-                    '/api':''
-                }
+            '/cms':{
+                target:'http://localhost:6001/',
+                changeOrigin:true
             }
         },
         // CSS Sourcemaps off by default because relative paths are "buggy"
