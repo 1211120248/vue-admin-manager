@@ -7,34 +7,22 @@
             <v-menu></v-menu>
         </el-col>
         <div style="height: 100%;overflow:scroll;" >
-            <el-col :span="11" style="padding-left: 10px" :offset="5">
-                <v-carousel></v-carousel>
-                <v-article></v-article>
-            </el-col>
-            <el-col :span="7" style="margin-left: 10px;">
-                <v-mood></v-mood>
-                <v-search></v-search>
-                <v-words></v-words>
+            <el-col :span="19" style="padding-left: 10px" :offset="5">
+                <el-row>
+                    <router-view>
+                    </router-view>
+                </el-row>
             </el-col>
         </div>
     </el-row>
 </template>
 <script>
     import vMenu from "./common/Menu.vue";
-    import vCarousel from "./common/Carousel.vue";
-    import vArticle from "./common/Article.vue";
-    import vMood from "./common/Mood.vue";
-    import vPanel from "./common/Panel.vue";
-    import vSearch from "./common/Search.vue";
-    import vWords from "./common/Words.vue";
-
-
-
 
 
     export default{
         components:{
-            vMenu,vCarousel,vArticle,vMood,vPanel,vSearch,vWords
+            vMenu
         }
     }
 </script>

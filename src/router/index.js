@@ -69,7 +69,18 @@ export default new Router({
         },
         {
             path: '/blog',
-            component: resolve => require(['../components/blog/index.vue'], resolve)
+            component: resolve => require(['../components/blog/Index.vue'], resolve),
+            children:[
+                {
+                    path: '/',
+                    component: resolve => require(['../components/blog/Home.vue'], resolve)
+                },
+                {
+
+                    path: '/about',
+                    component: resolve => require(['../components/blog/About.vue'], resolve)
+                }
+            ]
         }
     ]
 })

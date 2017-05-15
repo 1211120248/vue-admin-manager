@@ -1,9 +1,8 @@
 <template>
 
-    <el-menu default-active="1">
+    <el-menu :default-active="onRoutes" unique-opened router>
         <template v-for="(item,index) in menus">
-            <el-menu-item :index="item.id">
-                <!--<i class="el-icon-message"></i>-->
+            <el-menu-item :index="item.href">
                 <span>{{ item.name }}</span>
             </el-menu-item>
         </template>
@@ -20,6 +19,11 @@
             this.$axios.post('/cms/menu/query',{pageSize:100000}).then((res) => {
                 this.menus = res.data.data.rows;
             })
+        },
+        computed:{
+            onRoutes(){
+                return this.$route.path.replace('/','');
+            }
         }
     }
 </script>
