@@ -60,7 +60,14 @@ export default new Router({
                 {
                     path: '/permission',
                     component: resolve => require(['../components/page/system/Permission.vue'], resolve)
-                }
+                },
+                {
+                    path: '/articleList',
+                    component: resolve => require(['../components/admin/article/Article.vue'], resolve)
+                },{
+                    path: '/articleTag',
+                    component: resolve => require(['../components/admin/article/ArticleTag.vue'], resolve)
+                },
             ]
         },
         {
@@ -79,6 +86,16 @@ export default new Router({
 
                     path: '/about',
                     component: resolve => require(['../components/blog/About.vue'], resolve)
+                },
+                {
+
+                    path: '/technicalArticle',
+                    component: resolve => require(['../components/blog/TechnicalArticle.vue'], resolve)
+                },
+                {
+
+                    path: '/moodMiary',
+                    component: resolve => require(['../components/blog/MoodMiary.vue'], resolve)
                 }
             ]
         }

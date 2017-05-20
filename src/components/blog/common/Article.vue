@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-panel title="最新文章">
+        <v-panel :title="title">
             <slot>
                 <div class="row">
                     <div class="col-sm-6 col-md-4" v-for="(item,index) in articles">
@@ -22,6 +22,9 @@
     import vPanel from "./Panel.vue";
 
     export default{
+        props:{
+            title:''
+        },
         components:{
             vPanel
         },
