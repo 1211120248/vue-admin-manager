@@ -3,11 +3,11 @@
         <div class="ms-title">鱼鳞图基础平台</div>
         <div class="ms-login">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
-                <el-form-item prop="username">
-                    <el-input v-model="ruleForm.username" placeholder="账号"></el-input>
+                <el-form-item prop="name">
+                    <el-input v-model="ruleForm.name" placeholder="账号"></el-input>
                 </el-form-item>
-                <el-form-item prop="password">
-                    <el-input type="password" placeholder="密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
+                <el-form-item prop="password" :error="message.password">
+                    <el-input type="password"  placeholder="密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
                 </el-form-item>
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
@@ -18,15 +18,20 @@
 </template>
 
 <script>
+    import Config from 'Config';
     export default {
         data: function(){
             return {
                 ruleForm: {
-                    username: '',
+                    name: '',
+                    password: ''
+                },
+                message : {
+                    name: '',
                     password: ''
                 },
                 rules: {
-                    username: [
+                    name: [
                         { required: true, message: '请输入用户名', trigger: 'blur' }
                     ],
                     password: [
@@ -37,14 +42,24 @@
         },
         methods: {
             submitForm(formName) {
-                const self = this;
-                self.$refs[formName].validate((valid) => {
+                this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        localStorage.setItem('ms_username',self.ruleForm.username);
-                        self.$router.push('/readme');
-                    } else {
-                        console.log('error submit!!');
-                        return false;
+//                        this.$axios.post(Config.HOST + '/login',this.ruleForm).then((res) => {
+//                            if(res.data.success){
+                                localStorage.setItem("user_name",this.ruleForm.name)
+                                this.$router.push('/admin');
+//                            }else{
+//                                if(res.data.msg){
+//                                    this.$message({
+//                                        showClose: true,
+//                                        message: res.data.msg,
+//                                        type: 'error'
+//                                    });
+//                                }
+//                            }
+//                        })
+//                    }else{
+//                        return false;
                     }
                 });
             }

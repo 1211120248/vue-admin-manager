@@ -10,7 +10,11 @@ export default new Router({
             redirect: '/login'
         },
         {
-            path: '/readme',
+            path: '/login',
+            component: resolve => require(['page/admin/Login.vue'], resolve)
+        },
+        {
+            path: '/admin',
             component: resolve => require(['../components/common/Home.vue'], resolve),
             children:[
                 {
@@ -18,61 +22,21 @@ export default new Router({
                     component: resolve => require(['../components/page/Readme.vue'], resolve)
                 },
                 {
-                    path: '/basetable',
-                    component: resolve => require(['../components/page/BaseTable.vue'], resolve)
-                },
-                {
-                    path: '/vuetable',
-                    component: resolve => require(['../components/page/VueTable.vue'], resolve)     // vue-datasource组件
-                },
-                {
-                    path: '/baseform',
-                    component: resolve => require(['../components/page/BaseForm.vue'], resolve)
-                },
-                {
-                    path: '/vueeditor',
-                    component: resolve => require(['../components/page/VueEditor.vue'], resolve)    // Vue-Quill-Editor组件
-                },
-                {
-                    path: '/markdown',
-                    component: resolve => require(['../components/page/Markdown.vue'], resolve)     // Vue-Quill-Editor组件
-                },
-                {
-                    path: '/upload',
-                    component: resolve => require(['../components/page/Upload.vue'], resolve)       // Vue-Core-Image-Upload组件
-                },
-                {
-                    path: '/basecharts',
-                    component: resolve => require(['../components/page/BaseCharts.vue'], resolve)   // vue-echarts-v3组件
-                },
-                {
-                    path: '/mixcharts',
-                    component: resolve => require(['../components/page/MixCharts.vue'], resolve)    // vue-echarts-v3组件
-                },
-                {
+
                     path: '/user',
-                    component: resolve => require(['../components/page/system/User.vue'], resolve)
+                    component: resolve => require(['page/admin/user/User.vue'], resolve)
                 },
                 {
+
                     path: '/role',
-                    component: resolve => require(['../components/page/system/Role.vue'], resolve)
+                    component: resolve => require(['page/admin/role/Role.vue'], resolve)
                 },
                 {
+
                     path: '/permission',
-                    component: resolve => require(['../components/page/system/Permission.vue'], resolve)
-                },
-                {
-                    path: '/articleList',
-                    component: resolve => require(['../components/admin/article/Article.vue'], resolve)
-                },{
-                    path: '/articleTag',
-                    component: resolve => require(['../components/admin/article/ArticleTag.vue'], resolve)
-                },
+                    component: resolve => require(['page/admin/permission/Permission.vue'], resolve)
+                }
             ]
-        },
-        {
-            path: '/login',
-            component: resolve => require(['../components/page/Login.vue'], resolve)
         },
         {
             path: '/blog',
@@ -81,21 +45,6 @@ export default new Router({
                 {
                     path: '/',
                     component: resolve => require(['../components/blog/Home.vue'], resolve)
-                },
-                {
-
-                    path: '/about',
-                    component: resolve => require(['../components/blog/About.vue'], resolve)
-                },
-                {
-
-                    path: '/technicalArticle',
-                    component: resolve => require(['../components/blog/TechnicalArticle.vue'], resolve)
-                },
-                {
-
-                    path: '/moodMiary',
-                    component: resolve => require(['../components/blog/MoodMiary.vue'], resolve)
                 }
             ]
         }

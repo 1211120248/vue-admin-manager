@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-        <div class="logo">Mocker基础平台</div>
+        <div class="logo">{{ systemName }}</div>
         <div class="user-info">
             <el-dropdown trigger="click" @command="handleCommand">
                 <span class="el-dropdown-link">
@@ -15,22 +15,28 @@
     </div>
 </template>
 <script>
+    import Config from 'Config';
+
     export default {
         data() {
             return {
-                name: 'linxin'
+                name: '',
+                systemName : ''
             }
         },
         computed:{
             username(){
-                let username = localStorage.getItem('ms_username');
-                return username ? username : this.name;
+                let name = localStorage.getItem('user_name');
+                return name ? name : this.name;
             }
+        },
+        created() {
+            this.systemName = Config.SYSTEM_NAME;
         },
         methods:{
             handleCommand(command) {
                 if(command == 'loginout'){
-                    localStorage.removeItem('ms_username')
+                    localStorage.removeItem('user_name')
                     this.$router.push('/login');
                 }
             }
