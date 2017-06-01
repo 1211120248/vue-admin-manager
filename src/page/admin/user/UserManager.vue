@@ -29,7 +29,12 @@
                 <template scope="scope">
                     <el-button
                         size="small"
+                        type="primary"
                         @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                    <el-button
+                        size="small"
+                        type="primary"
+                        @click="handleEditRoles(scope.$index, scope.row)">角色</el-button>
                     <el-button
                         size="small"
                         type="danger"
@@ -73,6 +78,15 @@
                 </el-form-item>
             </el-form>
         </el-dialog>
+        <el-dialog title="分配角色" :visible.sync="roleDialogVisible">
+            <template>
+                <el-transfer v-model="role.value" :data="role.data" :titles="titles" style="margin-left: 100px;"  @change="handleRolesChange"></el-transfer>
+            </template>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="roleDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="handleSaveRoles">确 定</el-button>
+             </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -82,7 +96,7 @@
         data() {
             return {
                 tableData: [],
-                totalCount:'',
+                totalCount:0,
                 query : {
 
                 },
@@ -94,7 +108,15 @@
                 },
                 addDialogVisible: false,
                 editDialogVisible: false,
-                currentRow:0
+                roleDialogVisible: false,
+                currentRow:0,
+                role: {
+                    data:[
+                    ],
+                    value:[],
+                    userId:''
+                },
+                titles:["全部角色","选中的角色"]
             }
         },
         created () {
@@ -105,13 +127,47 @@
                 this.query.page = page;
                 this.handleQuery();
             },
+            handleRolesChange(value, direction, movedKeys) {
+                this.role.value = value;
+            },
+            handleSaveRoles(){
+                console.log(this.role.value);
+                this.$axios.post(Config.HOST + "/account/users/assignmentRoles/" + this.role.userId,this.role.value).then((res) => {
+                    if(res.data.success){
+                        this.roleDialogVisible = false;
+                    }else{
+                        this.$message.error(res.data.msg);
+                    }
+                });
+            },
+            handleEditRoles(index,row){
+                this.role.data = [];
+                this.role.value = [];
+                //获取所有权限
+                this.$axios.post(Config.HOST + "/account/roles/query",{}).then((res) => {
+                    for(let  i = 0; i < res.data.data.rows.length; ++i){
+                        var role = res.data.data.rows[i];
+                        this.role.data.push({
+                           label: role.name,
+                           key: role.id,
+                       });
+                    }
+                });
+                //获取已经分配的权限
+                this.$axios.get(Config.HOST + "/account/users/getRoleIds/" + row.id,{}).then((res) => {
+                    this.role.value = res.data.data;
+                });
+
+                this.role.userId = row.id;
+                this.roleDialogVisible = true;
+            },
             handleEdit(index,row) {
                 this.$axios.get(Config.HOST + "/account/users/" + row.id,this.query).then((res) => {
                     if(res.data.success){
                         this.form = res.data.data;
                         this.editDialogVisible = true;
                     }else{
-
+                        this.$message.error(res.data.msg);
                     }
                 });
             },

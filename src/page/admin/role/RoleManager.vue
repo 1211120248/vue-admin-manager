@@ -65,7 +65,7 @@
         data() {
             return {
                 tableData: [],
-                totalCount:'',
+                totalCount:0,
                 query : {
 
                 },
