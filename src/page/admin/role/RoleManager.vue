@@ -24,6 +24,10 @@
                         @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                     <el-button
                         size="small"
+                        type="primary"
+                        @click="handleEditPermissions(scope.$index, scope.row)">权限</el-button>
+                    <el-button
+                        size="small"
                         type="danger"
                         @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                 </template>
@@ -56,6 +60,15 @@
                 </el-form-item>
             </el-form>
         </el-dialog>
+        <el-dialog title="分配权限" :visible.sync="permissionsDialogVisible">
+            <el-tree
+                :data="permissions"
+                show-checkbox
+                node-key="id"
+                :props="defaultProps">
+            </el-tree>
+
+        </el-dialog>
     </div>
 </template>
 
@@ -75,7 +88,13 @@
                 },
                 addDialogVisible: false,
                 editDialogVisible: false,
-                currentRow:0
+                permissionsDialogVisible: false,
+                currentRow:0,
+                permissions:[],
+                defaultProps: {
+                    children: 'children',
+                    label: 'text'
+                }
             }
         },
         created () {
@@ -94,6 +113,12 @@
                     }else{
 
                     }
+                });
+            },
+            handleEditPermissions(index,row){
+                this.$axios.post(Config.HOST + "/account/permissions/query.tree",{}).then((res) => {
+                    this.permissions = res.data.data;
+                    this.permissionsDialogVisible = true;
                 });
             },
             handleDelete(index,row) {

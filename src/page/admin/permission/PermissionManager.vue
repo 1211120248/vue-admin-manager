@@ -1,53 +1,17 @@
 <template>
     <div>
         <div>
-            <el-button size="small" type="primary" class="el-icon-plus" @click="addDialogVisible=true,form={}">添加权限</el-button>
+            <el-button size="small" type="primary" class="el-icon-plus" @click="handleAdd">添加权限</el-button>
+            <el-button size="small" type="primary" class="el-icon-edit" @click="handleEdit">编辑权限</el-button>
+
         </div>
         <br/>
-        <el-table
-            :data="tableData"
-            stripe
-            @current-change=""
-            style="width: 100%">
-            <el-table-column
-                type="selection"
-                width="70">
-            </el-table-column>
-            <el-table-column
-                prop="name"
-                label="名称">
-            </el-table-column>
-            <el-table-column label="操作">
-                <template scope="scope">
-                    <el-button
-                        size="small"
-                        @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                    <el-button
-                        size="small"
-                        type="danger"
-                        @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+        <el-tree :data="permissions" :props="defaultProps" highlight-current @node-click="handleSelectedNode"	></el-tree>
         <br/>
-        <el-dialog title="添加权限" :visible.sync="addDialogVisible"  size="tiny">
+        <el-dialog :title="title" :visible.sync="editDialogVisible" size="tiny">
             <el-form label-width="80px">
                 <el-form-item label="名称">
                     <el-input v-model="form.name"></el-input>
-                </el-form-item>
-                <el-form-item label="权限代码">
-                    <el-input v-model="form.code"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="handleSubmit">立即创建</el-button>
-                    <el-button @click="addDialogVisible = false">取消</el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
-        <el-dialog title="编辑权限" :visible.sync="editDialogVisible" size="tiny">
-            <el-form label-width="80px">
-                <el-form-item label="名称">
-                    <el-input v-model="form.name" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="权限代码">
                     <el-input v-model="form.code"></el-input>
@@ -66,38 +30,60 @@
     export default {
         data() {
             return {
-                tableData: [],
+                permissions: [],
                 totalCount:'',
                 query : {
 
                 },
+                title:'',
                 form: {
                     id : '',
                     name: '',
-                    code: ''
+                    code: '',
+                    parentId: ''
                 },
-                addDialogVisible: false,
                 editDialogVisible: false,
-                currentRow:0
+                currentRow:0,
+                defaultProps: {
+                    children: 'children',
+                    label: 'text'
+                },
+                selectedNode: ''
             }
         },
         created () {
             this.handleQuery();
         },
         methods:{
+            handleSelectedNode(node){
+                this.selectedNode = node.id;
+            },
             handleCurrentChange(page) {
                 this.query.page = page;
                 this.handleQuery();
             },
-            handleEdit(index,row) {
-                this.$axios.get(Config.HOST + "/account/permissions/" + row.id,this.query).then((res) => {
-                    if(res.data.success){
-                        this.form = res.data.data;
-                        this.editDialogVisible = true;
-                    }else{
+            handleAdd() {
+                this.editDialogVisible = true;
+                this.form = {};
+                this.title = "添加权限";
+            },
+            handleEdit() {
+                if(this.selectedNode){
+                    this.title = "编辑权限";
+                    this.form = {};
+                    this.editDialogVisible = true;
+                    this.$axios.get(Config.HOST + "/account/permissions/" + this.selectedNode,this.query).then((res) => {
+                        if(res.data.success){
+                            this.form = res.data.data;
+                            this.editDialogVisible = true;
+                        }else{
 
-                    }
-                });
+                        }
+                    });
+                }else{
+                    this.$message.error("请先选择你要编辑的节点!");
+                }
+
             },
             handleDelete(index,row) {
                 this.$axios.delete(Config.HOST + "/account/permissions/" + row.id).then((res) => {
@@ -110,7 +96,7 @@
                 });
             },
             handleSubmit() {
-                debugger
+                this.form.parentId = this.selectedNode;
                 if(this.form.id){
                     this.$axios.put(Config.HOST + "/account/permissions/" + this.form.id,this.form).then((res) => {
                         if(res.data.success){
@@ -132,8 +118,8 @@
                 }
             },
             handleQuery(){
-                this.$axios.post(Config.HOST + "/account/permissions/query",this.query).then((res) => {
-                    this.tableData = res.data.data;
+                this.$axios.post(Config.HOST + "/account/permissions/query.tree",this.query).then((res) => {
+                    this.permissions = res.data.data;
                 });
             }
         }
