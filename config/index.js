@@ -28,7 +28,10 @@ module.exports = {
         assetsSubDirectory: 'static',
         assetsPublicPath: '/',
         proxyTable: {
-
+            '/yulintu':{
+                target:'http://localhost:6003/',
+                changeOrigin:true
+            }
         },
         // CSS Sourcemaps off by default because relative paths are "buggy"
         // with this option, according to the CSS-Loader README

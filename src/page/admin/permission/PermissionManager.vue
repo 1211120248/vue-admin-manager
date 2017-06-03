@@ -3,7 +3,7 @@
         <div>
             <el-button size="small" type="primary" class="el-icon-plus" @click="handleAdd">添加权限</el-button>
             <el-button size="small" type="primary" class="el-icon-edit" @click="handleEdit">编辑权限</el-button>
-
+            <el-button size="small" type="danger" class="el-icon-close" @click="handleDelete">删除权限</el-button>
         </div>
         <br/>
         <el-tree :data="permissions" :props="defaultProps" highlight-current @node-click="handleSelectedNode"	></el-tree>
@@ -86,7 +86,7 @@
 
             },
             handleDelete(index,row) {
-                this.$axios.delete(Config.HOST + "/account/permissions/" + row.id).then((res) => {
+                this.$axios.delete(Config.HOST + "/account/permissions/" + this.selectedNode).then((res) => {
                     if(res.data.success){
                         this.$message('删除成功!');
                     }else{

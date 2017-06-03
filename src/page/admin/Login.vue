@@ -44,22 +44,22 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-//                        this.$axios.post(Config.HOST + '/login',this.ruleForm).then((res) => {
-//                            if(res.data.success){
+                        this.$axios.post(Config.HOST + '/login',this.ruleForm).then((res) => {
+                            if(res.data.success){
                                 localStorage.setItem("user_name",this.ruleForm.name)
                                 this.$router.push('/admin');
-//                            }else{
-//                                if(res.data.msg){
-//                                    this.$message({
-//                                        showClose: true,
-//                                        message: res.data.msg,
-//                                        type: 'error'
-//                                    });
-//                                }
-//                            }
-//                        })
-//                    }else{
-//                        return false;
+                            }else{
+                                if(res.data.msg){
+                                    this.$message({
+                                        showClose: true,
+                                        message: res.data.msg,
+                                        type: 'error'
+                                    });
+                                }
+                            }
+                        })
+                    }else{
+                        return false;
                     }
                 });
             }

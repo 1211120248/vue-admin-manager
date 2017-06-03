@@ -65,9 +65,15 @@
                 :data="permissions"
                 show-checkbox
                 node-key="id"
+                ref="dialogTree"
+                getCheckedKeys=""
+                :default-checked-keys="selectedPermission"
                 :props="defaultProps">
             </el-tree>
-
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="permissionsDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="handleSavePermissions">确 定</el-button>
+            </span>
         </el-dialog>
     </div>
 </template>
@@ -82,6 +88,7 @@
                 query : {
 
                 },
+                currentNodeKey:'',
                 form: {
                     id : '',
                     name: ''
@@ -94,13 +101,26 @@
                 defaultProps: {
                     children: 'children',
                     label: 'text'
-                }
+                },
+                selectedPermission:[]
             }
         },
         created () {
             this.handleQuery();
         },
         methods:{
+            handleSelectedNode(node){
+                this.selectedNode = node.id;
+            },
+            handleSavePermissions () {
+                this.$axios.put(Config.HOST + "/account/roles/assignmentPermission/" + this.form.id,this.$refs.dialogTree.getCheckedKeys()).then((res) => {
+                    if(res.data.success){
+                        this.permissionsDialogVisible = false;
+                    }else{
+
+                    }
+                });
+            },
             handleCurrentChange(page) {
                 this.query.page = page;
                 this.handleQuery();
@@ -116,9 +136,14 @@
                 });
             },
             handleEditPermissions(index,row){
+                this.form.id = row.id;
+                this.selectedPermission = [];
+                this.permissionsDialogVisible = true;
                 this.$axios.post(Config.HOST + "/account/permissions/query.tree",{}).then((res) => {
                     this.permissions = res.data.data;
-                    this.permissionsDialogVisible = true;
+                });
+                this.$axios.post(Config.HOST + "/account/roles/getPermissions/" + row.id,{}).then((res) => {
+                    this.selectedPermission = res.data.data;
                 });
             },
             handleDelete(index,row) {
