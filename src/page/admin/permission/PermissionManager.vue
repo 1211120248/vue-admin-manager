@@ -16,6 +16,15 @@
                 <el-form-item label="权限代码">
                     <el-input v-model="form.code"></el-input>
                 </el-form-item>
+
+                <el-form-item label="权限类型">
+                    <el-select v-model="form.type" placeholder="请选择权限类型">
+                        <el-option label="系统" value="system"></el-option>
+                        <el-option label="菜单" value="menu"></el-option>
+                        <el-option label="页面" value="page"></el-option>
+                        <el-option label="按钮" value="button"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="handleSubmit">保存编辑</el-button>
                     <el-button @click="editDialogVisible = false">取消</el-button>
@@ -27,7 +36,9 @@
 
 <script>
     import Config from 'Config';
+    import ElFormItem from "../../../../node_modules/element-ui/packages/form/src/form-item";
     export default {
+        components: {ElFormItem},
         data() {
             return {
                 permissions: [],
@@ -40,7 +51,8 @@
                     id : '',
                     name: '',
                     code: '',
-                    parentId: ''
+                    parentId: '',
+                    type:''
                 },
                 editDialogVisible: false,
                 currentRow:0,
@@ -63,16 +75,17 @@
                 this.handleQuery();
             },
             handleAdd() {
+                this.setFormNull();
                 this.editDialogVisible = true;
-                this.form = {};
                 this.title = "添加权限";
             },
             handleEdit() {
+                this.setFormNull();
                 if(this.selectedNode){
                     this.title = "编辑权限";
                     this.form = {};
                     this.editDialogVisible = true;
-                    this.$axios.get(Config.HOST + "/account/permissions/" + this.selectedNode,this.query).then((res) => {
+                    this.$axios.get(Config.ACCOUNT_HOST + "/admin/permissions/" + this.selectedNode,this.query).then((res) => {
                         if(res.data.success){
                             this.form = res.data.data;
                             this.editDialogVisible = true;
@@ -86,7 +99,7 @@
 
             },
             handleDelete(index,row) {
-                this.$axios.delete(Config.HOST + "/account/permissions/" + this.selectedNode).then((res) => {
+                this.$axios.delete(Config.ACCOUNT_HOST + "/admin/permissions/" + this.selectedNode).then((res) => {
                     if(res.data.success){
                         this.$message('删除成功!');
                     }else{
@@ -98,7 +111,10 @@
             handleSubmit() {
                 this.form.parentId = this.selectedNode;
                 if(this.form.id){
-                    this.$axios.put(Config.HOST + "/account/permissions/" + this.form.id,this.form).then((res) => {
+                    this.$axios.put(Config.ACCOUNT_HOST + "/admin/permissions/" + this.form.id,{
+                        'name':this.form.name,
+                        'code':this.form.code
+                    }).then((res) => {
                         if(res.data.success){
                             this.editDialogVisible = false;
                             this.handleQuery();
@@ -107,7 +123,10 @@
                         }
                     });
                 }else{
-                    this.$axios.post(Config.HOST + "/account/permissions",this.form).then((res) => {
+                    this.$axios.post(Config.ACCOUNT_HOST + "/admin/permissions",{
+                        'name':this.form.name,
+                        'code':this.form.code
+                    }).then((res) => {
                         if(res.data.success){
                             this.addDialogVisible = false;
                             this.handleQuery();
@@ -118,9 +137,16 @@
                 }
             },
             handleQuery(){
-                this.$axios.post(Config.HOST + "/account/permissions/query.tree",this.query).then((res) => {
+                this.$axios.post(Config.ACCOUNT_HOST + "/admin/permissions/query.tree",this.query).then((res) => {
                     this.permissions = res.data.data;
                 });
+            },
+            setFormNull(){
+                this.form.id = '';
+                this.form.parentId='';
+                this.form.name = '';
+                this.form.code = '';
+                this.form.type = '';
             }
         }
     }

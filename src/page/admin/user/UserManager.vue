@@ -132,7 +132,7 @@
             },
             handleSaveRoles(){
                 console.log(this.role.value);
-                this.$axios.post(Config.HOST + "/account/users/assignmentRoles/" + this.role.userId,this.role.value).then((res) => {
+                this.$axios.post(Config.ACCOUNT_HOST + "/admin/users/assignmentRoles/" + this.role.userId,this.role.value).then((res) => {
                     if(res.data.success){
                         this.roleDialogVisible = false;
                     }else{
@@ -144,7 +144,7 @@
                 this.role.data = [];
                 this.role.value = [];
                 //获取所有权限
-                this.$axios.post(Config.HOST + "/account/roles/query",{}).then((res) => {
+                this.$axios.post(Config.ACCOUNT_HOST + "/admin/roles/query",{}).then((res) => {
                     for(let  i = 0; i < res.data.data.rows.length; ++i){
                         var role = res.data.data.rows[i];
                         this.role.data.push({
@@ -154,7 +154,7 @@
                     }
                 });
                 //获取已经分配的权限
-                this.$axios.get(Config.HOST + "/account/users/getRoleIds/" + row.id,{}).then((res) => {
+                this.$axios.get(Config.ACCOUNT_HOST + "/admin/users/getRoleIds/" + row.id,{}).then((res) => {
                     this.role.value = res.data.data;
                 });
 
@@ -162,7 +162,7 @@
                 this.roleDialogVisible = true;
             },
             handleEdit(index,row) {
-                this.$axios.get(Config.HOST + "/account/users/" + row.id,this.query).then((res) => {
+                this.$axios.get(Config.ACCOUNT_HOST + "/admin/users/" + row.id,this.query).then((res) => {
                     if(res.data.success){
                         this.form = res.data.data;
                         this.editDialogVisible = true;
@@ -172,7 +172,7 @@
                 });
             },
             handleDelete(index,row) {
-                this.$axios.delete(Config.HOST + "/account/users/" + row.id).then((res) => {
+                this.$axios.delete(Config.ACCOUNT_HOST + "/admin/users/" + row.id).then((res) => {
                     if(res.data.success){
                         this.$message('删除成功!');
                     }else{
@@ -184,7 +184,7 @@
             handleSubmit() {
                 debugger
                 if(this.form.id){
-                    this.$axios.put(Config.HOST + "/account/users/" + this.form.id,this.form).then((res) => {
+                    this.$axios.put(Config.ACCOUNT_HOST + "/admin/users/" + this.form.id,this.form).then((res) => {
                         if(res.data.success){
                             this.editDialogVisible = false;
                             this.handleQuery();
@@ -193,7 +193,7 @@
                         }
                     });
                 }else{
-                    this.$axios.post(Config.HOST + "/account/users",this.form).then((res) => {
+                    this.$axios.post(Config.ACCOUNT_HOST + "/admin/users",this.form).then((res) => {
                         if(res.data.success){
                             this.addDialogVisible = false;
                             this.handleQuery();
@@ -204,7 +204,7 @@
                 }
             },
             handleQuery(){
-                this.$axios.post(Config.HOST + "/account/users/query",this.query).then((res) => {
+                this.$axios.post(Config.ACCOUNT_HOST + "/admin/users/query",this.query).then((res) => {
                     this.tableData = res.data.data.rows;
                     this.totalCount = res.data.data.totalCount;
                 });

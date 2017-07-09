@@ -35,6 +35,11 @@ export default new Router({
 
                     path: '/permission',
                     component: resolve => require(['page/admin/permission/Permission.vue'], resolve)
+                },
+                {
+
+                    path: '/dict',
+                    component: resolve => require(['page/admin/dict/Dict.vue'], resolve)
                 }
             ]
         },

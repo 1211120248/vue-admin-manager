@@ -23,19 +23,7 @@ var proxyTable = config.dev.proxyTable
 
 var app = express()
 
-var appData = require("../data.json")
-var user_list = appData.user_list;
 var apiRoutes = express.Router();
-
-apiRoutes.post("/system/user",function (req,res) {
-    res.json({
-        "data":user_list,
-        "code":"200",
-        "total":user_list.length
-    })
-})
-
-app.use("/api",apiRoutes);
 
 var compiler = webpack(webpackConfig)
 

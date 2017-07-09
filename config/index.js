@@ -23,13 +23,13 @@ module.exports = {
     },
     dev: {
         env: require('./dev.env'),
-        port: 8080,
+        port: 9090,
         autoOpenBrowser: true,
         assetsSubDirectory: 'static',
         assetsPublicPath: '/',
         proxyTable: {
-            '/yulintu':{
-                target:'http://localhost:6003/',
+            '/account':{
+                target:'http://localhost:4000/',
                 changeOrigin:true
             }
         },

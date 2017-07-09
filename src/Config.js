@@ -1,6 +1,6 @@
-const HOST = "/yulintu";
+const ACCOUNT_HOST = "/account";
 const SYSTEM_NAME = "鱼鳞图基础平台";
 
 export default {
-    HOST,SYSTEM_NAME
+    ACCOUNT_HOST,SYSTEM_NAME
 }
