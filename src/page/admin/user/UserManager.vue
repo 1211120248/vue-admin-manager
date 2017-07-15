@@ -25,7 +25,7 @@
                 prop="status"
                 label="状态">
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="操作" width="290">
                 <template scope="scope">
                     <el-button
                         size="small"
@@ -35,6 +35,10 @@
                         size="small"
                         type="primary"
                         @click="handleEditRoles(scope.$index, scope.row)">角色</el-button>
+                    <el-button
+                        size="small"
+                        type="primary"
+                        @click="handleEditPermission(scope.$index, scope.row)">权限</el-button>
                     <el-button
                         size="small"
                         type="danger"
@@ -79,9 +83,9 @@
             </el-form>
         </el-dialog>
         <el-dialog title="分配角色" :visible.sync="roleDialogVisible">
-            <template>
-                <el-transfer v-model="role.value" :data="role.data" :titles="titles" style="margin-left: 100px;"  @change="handleRolesChange"></el-transfer>
-            </template>
+            <el-checkbox-group v-model="selectRoles">
+                <el-checkbox :label="role.id" v-for="role in roles">{{ role.name }}</el-checkbox>
+            </el-checkbox-group>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="roleDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="handleSaveRoles">确 定</el-button>
@@ -104,19 +108,16 @@
                     id : '',
                     name: '',
                     password:'',
-                    nickname:''
+                    nickname:'',
+                    type:[]
                 },
                 addDialogVisible: false,
                 editDialogVisible: false,
                 roleDialogVisible: false,
                 currentRow:0,
-                role: {
-                    data:[
-                    ],
-                    value:[],
-                    userId:''
-                },
-                titles:["全部角色","选中的角色"]
+                roles: [],
+                selectRoles:[],
+                currentUser:''
             }
         },
         created () {
@@ -131,8 +132,7 @@
                 this.role.value = value;
             },
             handleSaveRoles(){
-                console.log(this.role.value);
-                this.$axios.post(Config.ACCOUNT_HOST + "/admin/users/assignmentRoles/" + this.role.userId,this.role.value).then((res) => {
+                this.$axios.post(Config.ACCOUNT_HOST + "/admin/users/assignmentRoles/" + this.currentUser,this.selectRoles).then((res) => {
                     if(res.data.success){
                         this.roleDialogVisible = false;
                     }else{
@@ -141,25 +141,21 @@
                 });
             },
             handleEditRoles(index,row){
-                this.role.data = [];
-                this.role.value = [];
-                //获取所有权限
-                this.$axios.post(Config.ACCOUNT_HOST + "/admin/roles/query",{}).then((res) => {
-                    for(let  i = 0; i < res.data.data.rows.length; ++i){
-                        var role = res.data.data.rows[i];
-                        this.role.data.push({
-                           label: role.name,
-                           key: role.id,
-                       });
-                    }
-                });
-                //获取已经分配的权限
-                this.$axios.get(Config.ACCOUNT_HOST + "/admin/users/getRoleIds/" + row.id,{}).then((res) => {
-                    this.role.value = res.data.data;
-                });
+                this.selectRoles = [];
+                this.currentUser = row.id;
 
-                this.role.userId = row.id;
-                this.roleDialogVisible = true;
+                //获取所有权限
+                this.$axios.get(Config.ACCOUNT_HOST + "/admin/roles",{}).then((res) => {
+                        this.roles = res.data.data.rows;
+                    //获取已经分配的权限
+                    this.$axios.get(Config.ACCOUNT_HOST + "/admin/users/"+this.currentUser+"/roles").then((res) => {
+                        this.selectRoles = res.data.data;
+                        this.roleDialogVisible = true;
+                    });
+                });
+            },
+            handleEditPermission(index,row){
+
             },
             handleEdit(index,row) {
                 this.$axios.get(Config.ACCOUNT_HOST + "/admin/users/" + row.id,this.query).then((res) => {
@@ -182,9 +178,8 @@
                 });
             },
             handleSubmit() {
-                debugger
                 if(this.form.id){
-                    this.$axios.put(Config.ACCOUNT_HOST + "/admin/users/" + this.form.id,this.form).then((res) => {
+                    this.$axios.put(Config.ACCOUNT_HOST + "/admin/users",this.form).then((res) => {
                         if(res.data.success){
                             this.editDialogVisible = false;
                             this.handleQuery();

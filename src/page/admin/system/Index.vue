@@ -1,23 +1,23 @@
 <template>
     <div>
         <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="权限管理" name="permissionManager">
-                <v-permission-manager></v-permission-manager>
+            <el-tab-pane label="系统管理" name="systemManager">
+                <v-system-manager></v-system-manager>
             </el-tab-pane>
         </el-tabs>
         <router-view></router-view>
     </div>
 </template>
 <script>
-    import vPermissionManager from './PermissionManager.vue';
+    import vSystemManager from './SystemManager.vue';
 
     export default {
         components:{
-            vPermissionManager
+            vSystemManager
         },
         data() {
             return {
-                activeName: 'permissionManager'
+                activeName: 'systemManager'
             };
         },
         methods: {

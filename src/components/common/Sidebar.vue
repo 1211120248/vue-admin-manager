@@ -16,11 +16,9 @@
             <el-menu-item index="dict">
                 <span>数据字典</span>
             </el-menu-item>
-            <!--<template v-for="(item,index) in menus">-->
-                <!--<el-menu-item :index="item.href">-->
-                    <!--<span>{{ item.name }}</span>-->
-                <!--</el-menu-item>-->
-             <!--</template>-->
+            <el-menu-item index="system">
+                <span>系统管理</span>
+            </el-menu-item>
         </el-menu>
     </div>
 </template>

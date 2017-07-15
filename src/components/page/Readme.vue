@@ -9,7 +9,7 @@
             <h3>README.md</h3>
             <article>
                 <h1>first-love</h1>
-                <p>基于Vue.js 2.x系列 + Element UI后台管理系统</p>
+                <p>基于Vue.js 2.x系列 + Element UI后台管理系统 + SpringCloud微服务架构</p>
                 <h2>功能</h2>
                 <el-checkbox disabled checked>Element UI</el-checkbox>
                 <br>
@@ -20,6 +20,8 @@
                 <el-checkbox disabled checked>角色管理</el-checkbox>
                 <br>
                 <el-checkbox disabled checked>权限管理</el-checkbox>
+                <br>
+                <el-checkbox disabled checked>系统管理</el-checkbox>
             </article>
         </div>
 

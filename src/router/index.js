@@ -18,38 +18,33 @@ export default new Router({
             component: resolve => require(['../components/common/Home.vue'], resolve),
             children:[
                 {
-                    path: '/index',
+                    path: '/',
                     component: resolve => require(['../components/page/Readme.vue'], resolve)
                 },
                 {
 
                     path: '/user',
-                    component: resolve => require(['page/admin/user/User.vue'], resolve)
+                    component: resolve => require(['page/admin/user/Index.vue'], resolve)
                 },
                 {
 
                     path: '/role',
-                    component: resolve => require(['page/admin/role/Role.vue'], resolve)
+                    component: resolve => require(['page/admin/role/Index.vue'], resolve)
                 },
                 {
 
                     path: '/permission',
-                    component: resolve => require(['page/admin/permission/Permission.vue'], resolve)
+                    component: resolve => require(['page/admin/permission/Index.vue'], resolve)
                 },
                 {
 
                     path: '/dict',
-                    component: resolve => require(['page/admin/dict/Dict.vue'], resolve)
-                }
-            ]
-        },
-        {
-            path: '/blog',
-            component: resolve => require(['../components/blog/Index.vue'], resolve),
-            children:[
+                    component: resolve => require(['page/admin/dict/Index.vue'], resolve)
+                },
                 {
-                    path: '/',
-                    component: resolve => require(['../components/blog/Home.vue'], resolve)
+
+                    path: '/system',
+                    component: resolve => require(['page/admin/system/Index.vue'], resolve)
                 }
             ]
         }

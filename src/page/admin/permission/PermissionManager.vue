@@ -6,9 +6,9 @@
             <el-button size="small" type="danger" class="el-icon-close" @click="handleDelete">删除权限</el-button>
         </div>
         <br/>
-        <el-tree :data="permissions" :props="defaultProps" highlight-current @node-click="handleSelectedNode"	></el-tree>
+        <el-tree :data="permissions" :props="defaultProps" highlight-current @node-click="handleSelectedNode" default-expand-all></el-tree>
         <br/>
-        <el-dialog :title="title" :visible.sync="editDialogVisible" size="tiny">
+        <el-dialog title="添加权限" :visible.sync="addDialogVisible" size="tiny">
             <el-form label-width="80px">
                 <el-form-item label="名称">
                     <el-input v-model="form.name"></el-input>
@@ -16,14 +16,19 @@
                 <el-form-item label="权限代码">
                     <el-input v-model="form.code"></el-input>
                 </el-form-item>
-
-                <el-form-item label="权限类型">
-                    <el-select v-model="form.type" placeholder="请选择权限类型">
-                        <el-option label="系统" value="system"></el-option>
-                        <el-option label="菜单" value="menu"></el-option>
-                        <el-option label="页面" value="page"></el-option>
-                        <el-option label="按钮" value="button"></el-option>
-                    </el-select>
+                <el-form-item>
+                    <el-button type="primary" @click="handleSubmit">立即创建</el-button>
+                    <el-button @click="addDialogVisible = false">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+        <el-dialog title="编辑权限" :visible.sync="editDialogVisible" size="tiny">
+            <el-form label-width="80px">
+                <el-form-item label="名称">
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-form-item label="权限代码">
+                    <el-input v-model="form.code"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="handleSubmit">保存编辑</el-button>
@@ -36,9 +41,10 @@
 
 <script>
     import Config from 'Config';
-    import ElFormItem from "../../../../node_modules/element-ui/packages/form/src/form-item";
     export default {
-        components: {ElFormItem},
+        props: {
+            systemId:''
+        },
         data() {
             return {
                 permissions: [],
@@ -55,6 +61,7 @@
                     type:''
                 },
                 editDialogVisible: false,
+                addDialogVisible: false,
                 currentRow:0,
                 defaultProps: {
                     children: 'children',
@@ -75,23 +82,15 @@
                 this.handleQuery();
             },
             handleAdd() {
-                this.setFormNull();
-                this.editDialogVisible = true;
-                this.title = "添加权限";
+                this.clearForm();
+                this.addDialogVisible = true;
             },
             handleEdit() {
-                this.setFormNull();
+                this.clearForm();
                 if(this.selectedNode){
-                    this.title = "编辑权限";
-                    this.form = {};
-                    this.editDialogVisible = true;
-                    this.$axios.get(Config.ACCOUNT_HOST + "/admin/permissions/" + this.selectedNode,this.query).then((res) => {
-                        if(res.data.success){
-                            this.form = res.data.data;
-                            this.editDialogVisible = true;
-                        }else{
-
-                        }
+                    this.$axios.get(Config.ACCOUNT_HOST + "/admin/permissions/" + this.selectedNode).then((res) => {
+                        this.form = res.data.data;
+                        this.editDialogVisible = true;
                     });
                 }else{
                     this.$message.error("请先选择你要编辑的节点!");
@@ -109,9 +108,9 @@
                 });
             },
             handleSubmit() {
-                this.form.parentId = this.selectedNode;
                 if(this.form.id){
-                    this.$axios.put(Config.ACCOUNT_HOST + "/admin/permissions/" + this.form.id,{
+                    this.$axios.put(Config.ACCOUNT_HOST + "/admin/permissions",{
+                        'id':this.form.id,
                         'name':this.form.name,
                         'code':this.form.code
                     }).then((res) => {
@@ -124,8 +123,10 @@
                     });
                 }else{
                     this.$axios.post(Config.ACCOUNT_HOST + "/admin/permissions",{
+                        'parentId':this.selectedNode,
                         'name':this.form.name,
-                        'code':this.form.code
+                        'code':this.form.code,
+                        "systemId":this.systemId
                     }).then((res) => {
                         if(res.data.success){
                             this.addDialogVisible = false;
@@ -137,11 +138,11 @@
                 }
             },
             handleQuery(){
-                this.$axios.post(Config.ACCOUNT_HOST + "/admin/permissions/query.tree",this.query).then((res) => {
+                this.$axios.get(Config.ACCOUNT_HOST + "/admin/systems/"+this.systemId+"/permissions.tree",this.query).then((res) => {
                     this.permissions = res.data.data;
                 });
             },
-            setFormNull(){
+            clearForm(){
                 this.form.id = '';
                 this.form.parentId='';
                 this.form.name = '';

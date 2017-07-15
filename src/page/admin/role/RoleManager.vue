@@ -60,16 +60,19 @@
                 </el-form-item>
             </el-form>
         </el-dialog>
-        <el-dialog title="分配权限" :visible.sync="permissionsDialogVisible">
-            <el-tree
-                :data="permissions"
-                show-checkbox
-                node-key="id"
-                ref="dialogTree"
-                getCheckedKeys=""
-                :default-checked-keys="selectedPermission"
-                :props="defaultProps">
-            </el-tree>
+        <el-dialog title="分配权限" :visible.sync="permissionsDialogVisible" size="full">
+            <el-tabs v-model="activeName" :activeName="activeName">
+                <el-tab-pane :label="system.name" :name="system.id" v-for="system in systems">
+                    <el-tree
+                        :data="system.permissions"
+                        show-checkbox
+                        node-key="id"
+                        :default-checked-keys="selectedPermissions"
+                        @check-change="nodeChange"
+                        :props="defaultProps">
+                    </el-tree>
+                </el-tab-pane>
+            </el-tabs>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="permissionsDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="handleSavePermissions">确 定</el-button>
@@ -97,23 +100,37 @@
                 editDialogVisible: false,
                 permissionsDialogVisible: false,
                 currentRow:0,
-                permissions:[],
                 defaultProps: {
                     children: 'children',
                     label: 'text'
                 },
-                selectedPermission:[]
+                selectedPermissions:[],
+                systems:[],
+                activeName:''
             }
         },
         created () {
             this.handleQuery();
         },
         methods:{
+            nodeChange(obj,isChecked,isChildChecked){
+                if(isChecked){
+                    this.selectedPermissions.push(obj.id);
+                }else{
+                    for(var i = 0; i < this.selectedPermissions.length; i++) {
+                        if(this.selectedPermissions[i] == obj.id) {
+                            this.selectedPermissions.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+                console.log(this.selectedPermissions);
+            },
             handleSelectedNode(node){
                 this.selectedNode = node.id;
             },
             handleSavePermissions () {
-                this.$axios.put(Config.ACCOUNT_HOST + "/admin/roles/assignmentPermission/" + this.form.id,this.$refs.dialogTree.getCheckedKeys()).then((res) => {
+                this.$axios.put(Config.ACCOUNT_HOST + "/admin/roles/" + this.form.id + "/permissions/",this.selectedPermissions).then((res) => {
                     if(res.data.success){
                         this.permissionsDialogVisible = false;
                     }else{
@@ -137,13 +154,24 @@
             },
             handleEditPermissions(index,row){
                 this.form.id = row.id;
-                this.selectedPermission = [];
-                this.permissionsDialogVisible = true;
-                this.$axios.post(Config.ACCOUNT_HOST + "/admin/permissions/query.tree",{}).then((res) => {
-                    this.permissions = res.data.data;
-                });
-                this.$axios.post(Config.ACCOUNT_HOST + "/admin/roles/getPermissions/" + row.id,{}).then((res) => {
-                    this.selectedPermission = res.data.data;
+                //查询出系统
+                this.$axios.get(Config.ACCOUNT_HOST + "/admin/systems").then((res) => {
+                    this.systems = res.data.data;
+                    if(this.systems){
+                        this.activeName = this.systems[0].id;
+                        //查询出权限树
+                        this.$axios.get(Config.ACCOUNT_HOST + "/admin/systems/permissions.tree").then((res) => {
+                            for(let i = 0; i < this.systems.length; ++i){
+                                this.systems[i].permissions = res.data.data[this.systems[i].id];
+                            }
+                            //查询出该角色已经选择的权限
+                            this.$axios.get(Config.ACCOUNT_HOST + "/admin/roles/"+this.form.id+"/permissions").then((res) => {
+                                console.log(this.selectedPermissions = res.data.data)
+                                this.selectedPermissions = res.data.data;
+                                this.permissionsDialogVisible = true;
+                            });
+                        });
+                    }
                 });
             },
             handleDelete(index,row) {
@@ -157,7 +185,6 @@
                 });
             },
             handleSubmit() {
-                debugger
                 if(this.form.id){
                     this.$axios.put(Config.ACCOUNT_HOST + "/admin/roles/" + this.form.id,this.form).then((res) => {
                         if(res.data.success){
@@ -179,7 +206,7 @@
                 }
             },
             handleQuery(){
-                this.$axios.post(Config.ACCOUNT_HOST + "/admin/roles/query",this.query).then((res) => {
+                this.$axios.get(Config.ACCOUNT_HOST + "/admin/roles",this.query).then((res) => {
                     this.tableData = res.data.data.rows;
                     this.totalCount = res.data.data.totalCount;
                 });
@@ -187,4 +214,8 @@
         }
     }
 </script>
+<style>
+    .dialog-footer{
+    }
+</style>
 
